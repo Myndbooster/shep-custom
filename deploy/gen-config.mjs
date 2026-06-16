@@ -97,6 +97,10 @@ function renderEcosystem(cfg) {
         `        SHEP_BIND_HOST: ${JSON.stringify(cfg.bindHost ?? '127.0.0.1')},`,
         `        SHEP_HOME: ${JSON.stringify(shepHome(cfg, t))},`,
         `        GH_CONFIG_DIR: ${JSON.stringify(ghConfigDir(cfg, t))},`,
+        // Inherit the pm2 parent's PATH so the tenant can find the `claude` (and
+        // `gh`) binaries. pm2 started via systemd (`pm2 startup`) otherwise has a
+        // stripped PATH and agent detection reports "not installed".
+        `        PATH: process.env.PATH,`,
         // Inherited from the pm2 parent env if present; harmless (undefined) if not.
         `        ${CLAUDE_TOKEN_ENV}: process.env.${CLAUDE_TOKEN_ENV},`,
       ].join('\n');
